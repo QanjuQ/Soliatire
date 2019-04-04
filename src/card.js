@@ -1,14 +1,15 @@
 
 class Card{
-    constructor(rank,type,value,color) {
+    constructor(rank,type,value,color,open=false) {
         this.rank = rank;
         this.type = type;
         this.value = value;
         this.color = color;
+        this.isOpen = open;
     }
 
     isRankLowerThan(other) {
-        return this.rank > other.rank;
+        return this.rank - other.rank === 1;
     }
 
     isKing() {
@@ -35,8 +36,8 @@ class Card{
         return this.isSameColor(other) && this.isSameType(other);
     }
 
-    copy(card) {
-        return new Card(card.rank,card.type,card.value,card.color);
+    open() {
+        this.isOpen = true;
     }
 }
 

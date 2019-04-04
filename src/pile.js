@@ -16,7 +16,7 @@ class Pile{
         if(this.isEmpty() && card.isKing()) {
             return true;
         }
-        if(last.isRankLower(card) && last.isNotSameColor(card)) {
+        if(card.isRankLowerThan(last) && last.isNotSameColor(card)) {
             return true;
         }
         return false;
@@ -30,14 +30,18 @@ class Pile{
         return {cards:this.cards,last:this.last() || "blank"};
     }
 
-    takelast(number) {
+    takeLast(number) {
         const from = this.cards.length - number;
         const to = this.cards.length;
         this.cards.slice(from,to);
     }
 
-    removelast(number) {
+    removeLast(number) {
         this.cards.splice(this.cards.length - number);
+    }
+
+    open()  {
+        this.last().open();
     }
 }
  

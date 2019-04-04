@@ -4,7 +4,7 @@ import Foundation from './foundation.js';
 
 class Game {
     constructor(tableau,foundations,stock) {
-       this.tableau = tableau; 
+       this.tableau = tableau;
        this.foundations = foundations; 
        this.stock = stock; 
     }
@@ -28,6 +28,11 @@ class Game {
 
     refreshStock() {
         this.stock.refresh();
+        return this;
+    }
+
+    moveBetweenPiles(count,from,to) {
+        this.tableau.move(count,from,to);
         return this;
     }
 }

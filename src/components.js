@@ -8,7 +8,7 @@ class Card extends Component {
             color: this.props.color,
             rank: this.props.rank,
             type: this.props.type,
-            value: this.props.value     
+            value: this.props.value  
         }
         this.className = this.className.bind(this);
         this.onDragStart = this.onDragStart.bind(this);
@@ -19,7 +19,7 @@ class Card extends Component {
     }
 
     onDragStart(event,id) {
-        event.dataTransfer.setData("id",id); 
+        event.dataTransfer.setData("id",id);
         this.props.move(this.state);
     }
 
@@ -30,23 +30,43 @@ class Card extends Component {
     }
 }
 
-const ClosedCard = (props) => (<div className="closed-card card" onClick = {props.onClick}/>)
+const ClosedCard = props => <div 
+    className="closed-card card" 
+    onClick = {props.onClick}
+/>;
 
-const openCard = (card,move,index=0) => <Card key = {"card" + card.type + index} 
-    color = {card.color} type = {card.type} value = {card.value} 
-    rank = {card.rank} move = {move}/>;
+const openCard = (card,move,index=0) => <Card 
+    key = {"card" + card.type + index} 
+    color = {card.color} type = {card.type} 
+    value = {card.value} 
+    rank = {card.rank} move = {move}
+/>;
 
 const Pile = (props) => {
-    const closedCard = card => <ClosedCard/>;
-    const onDrop = (event)=>{
-        event.preventDefault(); 
-        props.move();
+    const move = (card) => {card.pile = props.id; props.move(props.id);};
+    const closedCard = index => <ClosedCard key={"closedcard-" + index}/>;
+    const onDrop = event => {
+        event.preventDefault();
+        props.drop();
     };
 
-    const isLast = (array,index) => (array.length-1 === index);
+    const onDragOver =  event => {
+        event.preventDefault();
+        props.place(props.id);
+    };
+
+    const createCard = {
+        true: (card,move,index) => openCard(card,move,index),
+        false: (card,move,index) => closedCard(index)
+    };
+
     return (
-        <div className = "pile" onDrop = {onDrop} >
-            {props.cards.map((card,index,array) => isLast(array,index)?openCard(card,props.move,index):closedCard())}
+        <div className = "pile" 
+            onDragOver = {onDragOver} 
+            onDrop = {onDrop}>
+            {props.cards.map(
+                (card,index,array) => 
+                createCard[card.isOpen](card,move,index))}
         </div>
     );
 };
@@ -54,9 +74,14 @@ const Pile = (props) => {
 const Tabeleau = (props) => {
     return(
         <div className = "tableau" > 
-        {props.piles.map((pile,index) => <Pile key = {"pile" + index} 
-            cards = {pile.cards} move = {props.move} 
-            onClick = {props.onClick} place = {props.place}/>)}
+        {props.piles.map(
+            (pile,index) => <Pile 
+            key = {"pile-" + index} 
+            id={index}
+            cards = {pile.cards} 
+            move = {props.move}  
+            drop = {props.drop}  
+            place = {props.place}/>)}
         </div>
     );
 };
@@ -67,13 +92,19 @@ const Pillar = (props) => {
 
 const Stock = (props) => {
     const card = props.stock.card;
+    
     const openedCard = {
-        false: () => "",
+        false: () => "",  
         true : openCard
     };
+
     const content = {
-    true: () => (<div className="card" onClick={props.refresh}>refresh</div>),
-    false: ()=><ClosedCard onClick = {props.onClick}/>
+        true: () => (<div 
+            className="card" 
+            onClick={props.refresh}>
+            refresh</div>),
+
+        false: ()=><ClosedCard onClick = {props.onClick}/>
     };
 
     return (<div className = "stock" >
@@ -84,7 +115,9 @@ const Stock = (props) => {
 
 const Foundations = (props) => {
     return(<div className="foundation">
-{props.pillars.map((pillar,index) => <Pillar key = {"pillar" + index}/>)}
+    {props.pillars.map(
+        (pillar,index) => 
+        <Pillar key = {"pillar" + index}/>)}
     </div>);
 }
 
