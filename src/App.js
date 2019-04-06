@@ -13,6 +13,7 @@ class Game extends Component{
     this.place = this.place.bind(this);
     this.drop = this.drop.bind(this);
     this.takeFromStock = this.takeFromStock.bind(this);
+    this.buildFromPile = this.buildFromPile.bind(this);
   }
 
   open(event) {
@@ -32,7 +33,6 @@ class Game extends Component{
   }
 
   place(pile) {
-    console.log(pile,"pile");
     this.setState({to:pile});
   }
 
@@ -42,9 +42,18 @@ class Game extends Component{
   }
 
   takeFromStock() {
-    console.log(this.state.to,"to");
     this.state.game.moveFromStockToPile(this.state.to);
     this.setState ({game:this.state.game});
+  }
+
+  buildFromPile() {
+    this.state.game.build(this.state.from,this.state.to,this.state.card);
+    this.setState({game:this.state.game});
+  }
+
+  buildFromStock(){
+    this.state.game.build(this.state.to);
+    this.setState({game:this.state.game});
   }
 
   render() {
@@ -63,8 +72,9 @@ class Game extends Component{
       place = {this.place} />
 
       <Foundations
-      pillars = {state.foundation}/>
-
+      pillars = {state.foundation} 
+      place ={this.place} 
+      drop = {this.buildFromPile} />
       </Fragment>
       );
   }

@@ -33,11 +33,13 @@ class Pile{
     takeLast(number) {
         const from = this.cards.length - number;
         const to = this.cards.length;
-        this.cards.slice(from,to);
+        return this.cards.slice(from,to);
     }
 
     removeLast(number) {
-        return this.cards.splice(number);
+        const cards = this.cards.splice(number);
+        this.open();
+        return cards;
     }
 
     open()  {

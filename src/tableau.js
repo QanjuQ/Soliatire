@@ -24,12 +24,19 @@ class Tableau{
     }
 
     canBePlacedIn(card,pile){
-        console.log(pile);
         return this.pile(pile).canBePlaced(card);
     }
 
     place(to,card) {
         this.pile(to).placeCard(card);
+    }
+
+    pickCard(from) {
+        return this.pile(from).takeLast(1)[0];
+    }
+
+    remove(from,cardIndex) {
+        return this.pile(from).removeLast(cardIndex);
     }
 }
 

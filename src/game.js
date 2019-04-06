@@ -38,19 +38,35 @@ class Game {
 
     moveFromStockToPile(to) {
         let card = this.stock.current();
-        console.log(to);
-        // if(this.tableau.canBePlacedIn(card,to)){
+        if(this.tableau.canBePlacedIn(card,to)){
             this.stock.pick();
             this.tableau.place(card);
-        // }
+        }
         return this;
+    }
+
+    build(from,to,cardIndex) {
+        const card = this.tableau.pickCard(from);
+        if(this.foundations[to].canBePlaced(card)){
+            this.tableau.remove(from,cardIndex);
+            this.foundations[to].placeCard(card);
+        }
+        return this;
+    }
+
+    buildFromStock(to){
+        const card = this.stock.take();
+        if(this.foundations(to).canBePlaced(card)){
+            this.stock.pick();
+            this.foundations[to].placeCard(card);
+        }
     }
 
 }
 
 const createGame = () => {
     const tableau = createTableau(stock);
-    const foundations = Array(4).fill(new Foundation());
+    const foundations = [new Foundation(),new Foundation(),new Foundation(),new Foundation()];
     return new Game(tableau,foundations,stock);
 };
 

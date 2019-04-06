@@ -4,9 +4,6 @@ import './game.css';
 class Card extends Component {
     constructor(props){
         super(props);
-        // this.state = {
-        //     id: this.props.id  
-        // }
         this.className = this.className.bind(this);
         this.onDragStart = this.onDragStart.bind(this);
         this.style = this.style.bind(this);
@@ -96,7 +93,6 @@ class Pile extends Component {
     onDragOver (event) {
         event.preventDefault();
         this.props.place(this.props.id);
-        console.log(this.props.id,"hello");
     };
 }
 
@@ -116,7 +112,22 @@ const Tabeleau = (props) => {
 };
 
 const Pillar = (props) => {
-    return (<div className = "pillar"></div>)
+    const onDrop = (event) => {
+        event.preventDefault();
+        props.drop();
+    };
+
+    const onDragOver = (event) => {
+        event.preventDefault();
+        props.place(props.id)
+    };
+    const content = props.card? openCard(props.card): 
+    <div 
+        className = "pillar" 
+        onDrop = {onDrop}
+        onDragOver = {onDragOver}>
+    </div>; 
+    return (content);
 };
 
 const Stock = (props) => {
@@ -146,7 +157,11 @@ const Foundations = (props) => {
     return(<div className="foundation">
     {props.pillars.map(
         (pillar,index) => 
-        <Pillar key = {"pillar" + index}/>)}
+        <Pillar key = {"pillar" + index}
+        id = {index}
+        card = {pillar.card}
+        place={props.place}
+        drop = {props.drop}/>)}
     </div>);
 }
 

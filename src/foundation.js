@@ -3,12 +3,12 @@ class Foundation{
         this.cards = cards;
     }
 
-    first() {
-        return this.cards[0];
-    }
-
     last() {
         return this.cards[this.cards.length-1];
+    }
+
+    isEmpty(){
+        return this.cards.length === 0;
     }
 
     isFirstCard(card) {
@@ -16,7 +16,13 @@ class Foundation{
     }
 
     canBePlaced(card){
-        return this.last().isRankLower(card) && this.last().isSameFoundation(card);
+        const validate = {
+            true: card => card.isAce(),
+            false: card => this.last().isRankLower(card) 
+                            && this.last().isSameFoundation(card)
+        };
+
+        return validate[this.isEmpty()](card);
     }
 
     isComplete() {
@@ -24,13 +30,7 @@ class Foundation{
     }
 
     placeCard(card) {
-        if(this.isFirstCard(card)){
-            this.cards.push(card);
-            return;
-        }
-        if(this.canBePlaced(card)) {
-            this.cards.push(card);
-        }
+        this.cards.push(card);
     }
 
     state() {
