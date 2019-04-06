@@ -15,12 +15,21 @@ class Tableau{
 
     move(count,from,to) {
         let card = this.pile(from).last();
-        if(this.pile(to).canBePlaced(card)){
-            this.pile(from).removeLast(count);
+        if(this.canBePlacedIn(card,to)){
+            let cards = this.pile(from).removeLast(count);
             this.pile(from).open();
-            this.pile(to).placeCard(card);
+            cards.forEach(card => this.pile(to).placeCard(card));
         }
         return this;
+    }
+
+    canBePlacedIn(card,pile){
+        console.log(pile);
+        return this.pile(pile).canBePlaced(card);
+    }
+
+    place(to,card) {
+        this.pile(to).placeCard(card);
     }
 }
 

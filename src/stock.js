@@ -22,6 +22,10 @@ class Stock{
         return this.cards.splice(0,count);
     }
 
+    pick() {
+        return this.cards.splice(this.cursor,1);
+    }
+
     areAllOpened() {
         return this.cursor <= 0;
     }

@@ -37,10 +37,11 @@ class Pile{
     }
 
     removeLast(number) {
-        this.cards.splice(this.cards.length - number);
+        return this.cards.splice(number);
     }
 
     open()  {
+        if(this.isEmpty()) return;
         this.last().open();
     }
 }

@@ -35,11 +35,22 @@ class Game {
         this.tableau.move(count,from,to);
         return this;
     }
+
+    moveFromStockToPile(to) {
+        let card = this.stock.current();
+        console.log(to);
+        // if(this.tableau.canBePlacedIn(card,to)){
+            this.stock.pick();
+            this.tableau.place(card);
+        // }
+        return this;
+    }
+
 }
 
 const createGame = () => {
     const tableau = createTableau(stock);
-    const foundations = [new Foundation(),new Foundation(),new Foundation(),new Foundation()]
+    const foundations = Array(4).fill(new Foundation());
     return new Game(tableau,foundations,stock);
 };
 

@@ -3,4 +3,6 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+const element = <div className="card-size">{"\u{1F0A2}"}</div>;
+
+ReactDOM.render(<App/>, document.getElementById('root'));

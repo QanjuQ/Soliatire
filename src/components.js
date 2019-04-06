@@ -4,15 +4,21 @@ import './game.css';
 class Card extends Component {
     constructor(props){
         super(props);
-        this.state = {
-            color: this.props.color,
-            rank: this.props.rank,
-            type: this.props.type,
-            value: this.props.value  
-        }
+        // this.state = {
+        //     id: this.props.id  
+        // }
         this.className = this.className.bind(this);
         this.onDragStart = this.onDragStart.bind(this);
+        this.style = this.style.bind(this);
     }
+
+    style(){
+        return {
+            position: 'relative',
+            top: (-this.props.id*160) + "px"
+        }
+    }
+
 
     className() {
         return [this.props.color,this.props.type,"card","open-card"].join(' ');
@@ -20,56 +26,79 @@ class Card extends Component {
 
     onDragStart(event,id) {
         event.dataTransfer.setData("id",id);
-        this.props.move(this.state);
+        this.props.move({card:this.props.id});
     }
 
     render() {
-        return (<div className = {this.className()} draggable
+        return (<div style = {this.style()} className = {this.className()} draggable
             onDragStart = {this.onDragStart}>
             {this.props.value + " " + this.props.type}</div>);
     }
 }
 
 const ClosedCard = props => <div 
+    style = {{position: 'relative',top: (-props.id*160)+"px"}}
     className="closed-card card" 
     onClick = {props.onClick}
 />;
 
-const openCard = (card,move,index=0) => <Card 
+const closedCard = (card,move,index) => 
+    <ClosedCard id = {index} key={"closedcard-" + index}/>;
+
+const openCard = (card,onDrag,index=0) => <Card 
+    id = {index}
     key = {"card" + card.type + index} 
     color = {card.color} type = {card.type} 
     value = {card.value} 
-    rank = {card.rank} move = {move}
+    rank = {card.rank} move = {onDrag}
 />;
 
-const Pile = (props) => {
-    const move = (card) => {card.pile = props.id; props.move(props.id);};
-    const closedCard = index => <ClosedCard key={"closedcard-" + index}/>;
-    const onDrop = event => {
+class Pile extends Component {
+    constructor(props){
+        super(props);
+        this.move = this.move.bind(this);
+        this.onDragOver = this.onDragOver.bind(this);
+        this.onDrop = this.onDrop.bind(this);
+        this.isEmpty = this.isEmpty.bind(this);
+    }
+
+    isEmpty() {
+        return this.props.cards.length === 0;
+    }
+
+    render() {
+        const createCard = {
+            true: openCard,
+            false: closedCard
+        };
+
+        return (
+            <div className = "pile"
+                onDragOver = {this.onDragOver} 
+                onDrop = {this.onDrop}>
+                {this.props.cards.map(
+                    (card,index) =>
+                    createCard[card.isOpen](card,this.move,index))}
+            </div>
+        );
+    }
+
+    move (card){
+        card.from = this.props.id; 
+        this.props.move(card);
+    }
+
+    onDrop (event) {
         event.preventDefault();
-        props.drop();
+        this.props.drop();
     };
 
-    const onDragOver =  event => {
+    onDragOver (event) {
         event.preventDefault();
-        props.place(props.id);
+        this.props.place(this.props.id);
+        console.log(this.props.id,"hello");
     };
-
-    const createCard = {
-        true: (card,move,index) => openCard(card,move,index),
-        false: (card,move,index) => closedCard(index)
-    };
-
-    return (
-        <div className = "pile" 
-            onDragOver = {onDragOver} 
-            onDrop = {onDrop}>
-            {props.cards.map(
-                (card,index,array) => 
-                createCard[card.isOpen](card,move,index))}
-        </div>
-    );
-};
+}
 
 const Tabeleau = (props) => {
     return(
@@ -109,7 +138,7 @@ const Stock = (props) => {
 
     return (<div className = "stock" >
     {content[props.stock.allOpened]()}
-    {openedCard[props.stock.isOpen](card)}
+    {openedCard[props.stock.isOpen](card,props.pick)}
     </div>);
     };
 
